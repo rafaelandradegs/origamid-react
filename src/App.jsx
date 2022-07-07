@@ -1,23 +1,13 @@
 import React from 'react'
-import Home from './components/Home'
-import Produtos from './components/Produtos'
-import Rotas from './components/Rotas'
+import ButtonModal from './ButtonModal'
+import Modal from './Modal'
 
 const App = () => {
-  const { pathname } = window.location
-  console.log(pathname)
-  let Pagina
-
-  if (pathname === '/') {
-    Pagina = Home
-  } else {
-    Pagina = Produtos
-  }
-
+  const [modal, setModal] = React.useState(false)
   return (
     <>
-      <Rotas />
-      <Pagina />
+      <Modal modal={modal} setModal={setModal} />
+      <ButtonModal modal={modal} setModal={setModal} />
     </>
   )
 }
