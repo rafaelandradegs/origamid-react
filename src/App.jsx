@@ -1,21 +1,26 @@
 import React from 'react'
+import Button from './Button'
+import Produtos from './Produtos'
 
 const App = () => {
-  const [contar, setContar] = React.useState(1)
-  const [items, setItems] = React.useState(['item 1'])
+  const [dados, setDados] = React.useState(null)
+  const [isLoad, setIsLoad] = React.useState(null)
 
-  function handleClick() {
-    setContar(contar + 1)
-    setItems(items => [...items, 'item ' + (contar + 1)])
+  async function consumirApi(e) {
+    setIsLoad(true)
+    const response = await fetch(
+      `https://ranekapi.origamid.dev/json/api/produto/${e.target.innerText}`
+    )
+    const json = await response.json()
+    setDados(json)
+    setIsLoad(false)
   }
 
   return (
-    <h1>
-      <button onClick={handleClick}>{contar}</button>
-      {items.map(item => (
-        <li key={item}>{item}</li>
-      ))}
-    </h1>
+    <div>
+      <Button consumirApi={consumirApi}></Button>
+      {isLoad ? <p>Carregando</p> : <Produtos dados={dados} />}
+    </div>
   )
 }
 
