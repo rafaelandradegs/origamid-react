@@ -1,37 +1,31 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import Produto from './Produto'
 
 const App = () => {
-  const [listaProduto, setListaProduto] = React.useState(null)
+  const [produto, setProduto] = React.useState(null)
 
-  async function handleClick(e) {
-    const response = await fetch(
-      `https://ranekapi.origamid.dev/json/api/produto/${e.target.innerText}`
-    )
-    const data = await response.json()
-    setListaProduto(data)
-  }
-
-  useEffect(() => {
-    if (localStorage.getItem('produto') !== null) {
-      setListaProduto(JSON.parse(localStorage.getItem('produto')))
+  React.useEffect(() => {
+    const produtoLocal = localStorage.getItem('produto')
+    if (produtoLocal !== null) {
+      setProduto(produtoLocal)
     }
   }, [])
 
-  useEffect(
-    () => localStorage.setItem('produto', JSON.stringify(listaProduto)),
-    [listaProduto]
-  )
+  React.useEffect(() => {
+    if (produto !== null) localStorage.setItem('produto', produto)
+  }, [produto])
 
+  function handleClick({ target }) {
+    setProduto(target.innerText)
+  }
   return (
     <div>
-      {listaProduto && (
-        <div>
-          <h1>{listaProduto.nome}</h1>
-          <p>R$ {listaProduto.preco}</p>
-        </div>
-      )}
-      <button onClick={handleClick}>Notebook</button>
+      <h1>Preferencia: {produto}</h1>
+      <button style={{ margin: '10px' }} onClick={handleClick}>
+        Notebook
+      </button>
       <button onClick={handleClick}>Smartphone</button>
+      <Produto produto={produto} />
     </div>
   )
 }
