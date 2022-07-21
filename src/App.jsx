@@ -1,23 +1,30 @@
 import React from 'react'
 
-const App = () => {
-  const [carrinho, setCarrinho] = React.useState(0)
-  const [notificacao, setNotificacao] = React.useState(null)
-  const timeoutRef = React.useRef()
-
-  function handleClick() {
-    setCarrinho(carrinho => carrinho + 1)
-    setNotificacao('Item Adicionado no Carrinho')
-
-    clearTimeout(timeoutRef.current)
-    timeoutRef.current = setTimeout(() => {
-      setNotificacao(null)
-    }, 2000)
+function operacaoLenta() {
+  let c
+  for (let i = 0; i < 100000000; i++) {
+    c = i + i / 10
   }
+  return c
+}
+
+const App = () => {
+  const [contar, setContar] = React.useState(0)
+
+  // const valor = React.useMemo(() => {
+  //   const localItem = localStorage.getItem('produto')
+  //   console.log('aconteceu o memo')
+  //   return localItem
+  // }, [])
+
+  const t1 = performance.now()
+  const valor = React.useMemo(() => operacaoLenta(), [])
+  console.log(valor)
+  console.log(performance.now() - t1)
+
   return (
     <div>
-      <p>{notificacao}</p>
-      <button onClick={handleClick}>Adicionar Carrinho {carrinho}</button>
+      <button onClick={() => setContar(contar + 1)}>{contar}</button>
     </div>
   )
 }
