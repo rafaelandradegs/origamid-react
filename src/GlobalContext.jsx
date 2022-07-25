@@ -3,18 +3,20 @@ import React from 'react'
 export const GlobalContext = React.createContext()
 
 export const GlobalStorage = ({ children }) => {
-  const [contar, setContar] = React.useState(0)
+  const [dados, setDados] = React.useState([])
 
-  function contar1() {
-    setContar(contar + 1)
-  }
+  React.useEffect(() => {
+    fetch(`https://ranekapi.origamid.dev/json/api/produto/`)
+      .then(response => response.json())
+      .then(json => setDados(json))
+  }, [])
 
-  function contar2() {
-    setContar(contar + 2)
+  function limparDados() {
+    setDados([])
   }
 
   return (
-    <GlobalContext.Provider value={{ contar, contar1, contar2 }}>
+    <GlobalContext.Provider value={{ dados, setDados, limparDados }}>
       {children}
     </GlobalContext.Provider>
   )

@@ -2,13 +2,16 @@ import React from 'react'
 import { GlobalContext } from './GlobalContext'
 
 const Produto = () => {
-  const dados = React.useContext(GlobalContext)
+  const { dados, limparDados } = React.useContext(GlobalContext)
   console.log(dados)
   return (
     <div>
-      <h1> Numero: {dados.contar}</h1>
-      <button onClick={dados.contar1}>Conte mais 1 </button>
-      <button onClick={dados.contar2}>Conte mais 2 </button>
+      <ul>
+        {dados.map(dado => (
+          <li key={dado.id}>{dado.nome}</li>
+        ))}
+      </ul>
+      <button onClick={limparDados}>Apagar Lista</button>
     </div>
   )
 }
