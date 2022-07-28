@@ -1,39 +1,69 @@
 import React from 'react'
-import useFetch from './useFetch'
-import useLocalStorage from './useLocalStorage'
+import './style.css'
+import formField from './FormFields.js'
 
 const App = () => {
-  const [produto, setProduto] = useLocalStorage('produto', '')
-  const { request, data, loading, error } = useFetch()
+  const [statusOK, setStatusOk] = React.useState(false)
+  const dados = formField
 
-  React.useEffect(() => {
-    async function fetchData() {
-      const { response, json } = await request(
-        `https://ranekapi.origamid.dev/json/api/produto/`
-      )
-    }
-    fetchData()
-  }, [])
+  const [form, setForm] = React.useState(
+    dados.reduce((acc, field) => {
+      return {
+        ...acc,
+        [field.id]: ''
+      }
+    }, {})
+  )
 
-  function handleClick({ target }) {
-    setProduto(target.innerText)
+  function handleSubmit(event) {
+    event.preventDefault()
+    fetch(`https://ranekapi.origamid.dev/json/api/usuario`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(form)
+    }).then(response => {
+      if (response.ok) {
+        setStatusOk(true)
+        setTimeout(() => {
+          setStatusOk(false)
+        }, 2000)
+      }
+    })
   }
 
-  if (error) return <h1>{error}</h1>
-  if (loading) return <h1>Carregando...</h1>
-  if (data)
-    return (
-      <>
-        <h1>Produto: {produto}</h1>
-        <button onClick={handleClick}>Notebook</button>
-        <button onClick={handleClick}>Smarthphone</button>
+  function handleChange({ target }) {
+    const { id, value } = target
+    setForm({
+      ...form,
+      [id]: value
+    })
+  }
 
-        {data.map(produto => (
-          <h1 key={produto.id}>{produto.nome}</h1>
-        ))}
-      </>
-    )
-  else return null
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        {dados.map(({ id, campo, type }) => {
+          return (
+            <div key={id}>
+              <label htmlFor="nome">{campo}</label>
+              <input
+                type={type}
+                name={id}
+                id={id}
+                onChange={handleChange}
+                value={form[id]}
+              />
+            </div>
+          )
+        })}
+
+        {statusOK && <p>Formulario enviado com sucesso</p>}
+        <button>Submit</button>
+      </form>
+    </>
+  )
 }
 
 export default App
