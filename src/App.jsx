@@ -1,67 +1,37 @@
 import React from 'react'
-import './style.css'
-import formField from './FormFields.js'
 
 const App = () => {
-  const [statusOK, setStatusOk] = React.useState(false)
-  const dados = formField
+  const [data, setData] = React.useState([])
+  const [curso, setCurso] = React.useState('')
 
-  const [form, setForm] = React.useState(
-    dados.reduce((acc, field) => {
-      return {
-        ...acc,
-        [field.id]: ''
-      }
-    }, {})
-  )
+  React.useEffect(() => {
+    fetch('http://localhost:3010/cursos')
+      .then(response => response.json())
+      .then(json => setData(json))
+  }, [data])
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    fetch(`https://ranekapi.origamid.dev/json/api/usuario`, {
+  function novoCurso() {
+    fetch('http://localhost:3010/cursos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(form)
-    }).then(response => {
-      if (response.ok) {
-        setStatusOk(true)
-        setTimeout(() => {
-          setStatusOk(false)
-        }, 2000)
-      }
+      body: JSON.stringify({ name: curso })
     })
-  }
-
-  function handleChange({ target }) {
-    const { id, value } = target
-    setForm({
-      ...form,
-      [id]: value
-    })
+      .then(response => response.json())
+      .then(json => console.log(json))
+    console.log(curso)
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        {dados.map(({ id, campo, type }) => {
-          return (
-            <div key={id}>
-              <label htmlFor="nome">{campo}</label>
-              <input
-                type={type}
-                name={id}
-                id={id}
-                onChange={handleChange}
-                value={form[id]}
-              />
-            </div>
-          )
-        })}
-
-        {statusOK && <p>Formulario enviado com sucesso</p>}
-        <button>Submit</button>
-      </form>
+      <ul>
+        {data.map(d => (
+          <li key={d}>{d}</li>
+        ))}
+      </ul>
+      <input type="text" onChange={({ target }) => setCurso(target.value)} />
+      <button onClick={novoCurso}>Cadastrar Novo Curso</button>
     </>
   )
 }
