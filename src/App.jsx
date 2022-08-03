@@ -1,19 +1,53 @@
 import React from 'react'
 
 const App = () => {
-  const [select, setSelect] = React.useState('')
+  const [produto, setProduto] = React.useState('')
+  const [cor, setCor] = React.useState('')
+
+  function handleChange({ target }) {
+    setProduto(target.value)
+  }
 
   return (
     <form>
-      <select value={select} onChange={({ target }) => setSelect(target.value)}>
-        <option disabled value="">
-          Selecione
-        </option>
-        <option value="notebook">Notebook</option>
-        <option value="smarthphone">Smartphone</option>
-        <option value="tablet">Tablet</option>
-      </select>
-      <p>{select}</p>
+      <h2>Cores</h2>
+      <label>
+        <input
+          type="radio"
+          onChange={({ target }) => setCor(target.value)}
+          value="vermelho"
+          checked={cor === 'vermelho'}
+        />
+        Vermelho
+      </label>
+      <label>
+        <input
+          type="radio"
+          onChange={({ target }) => setCor(target.value)}
+          value="azul"
+          checked={cor === 'azul'}
+        />
+        azul
+      </label>
+      <h2>Produtos</h2>
+      <label>
+        <input
+          type="radio"
+          onChange={handleChange}
+          value="smarthfone"
+          checked={produto === 'smarthfone'}
+        />
+        Smarthfone
+      </label>
+      <label>
+        <input
+          type="radio"
+          onChange={handleChange}
+          value="notebook"
+          checked={produto === 'notebook'}
+        />
+        Notebook
+      </label>
     </form>
   )
 }
