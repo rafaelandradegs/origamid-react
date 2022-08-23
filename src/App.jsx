@@ -1,37 +1,15 @@
 import React from 'react'
 import Input from './Form/Input'
+import useForm from './Hooks/useForm'
 
 const App = () => {
-  const [cep, setCep] = React.useState('')
-  const [error, setError] = React.useState(null)
-
-  function validateCep(value) {
-    if (value.length === 0) {
-      setError('Preencha um valor')
-      return false
-    } else if (!/^\d{5}-?\d{3}$/.test(value)) {
-      setError('Preecha um CEP valido')
-      return false
-    } else {
-      setError(null)
-      return true
-    }
-  }
-
-  function handleChange({ target }) {
-    if (error) {
-      validateCep(target.value)
-    }
-    setCep(target.value)
-  }
-
-  function handleBlur({ target }) {
-    console.log(validateCep(target.value))
-  }
+  const cep = useForm('cep')
+  const email = useForm('email')
+  const nome = useForm()
 
   function handleSubmit(event) {
     event.preventDefault()
-    if (validateCep(cep)) {
+    if ((cep.validate(), email.validate(), nome.validate())) {
       console.log('Enviou')
     } else {
       console.log('Nao enviar')
@@ -40,16 +18,15 @@ const App = () => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <Input label="Nome: " id="nome" type="text" {...nome} />
       <Input
-        label="CEP"
+        label="CEP: "
         id="cep"
         type="text"
-        value={cep}
-        onChange={handleChange}
-        onBlur={handleBlur}
         placeholder="00000-000"
+        {...cep}
       />
-      {error && <p>{error}</p>}
+      <Input label="Email: " id="email" type="email" {...email} />
       <button>Enviar</button>
     </form>
   )
